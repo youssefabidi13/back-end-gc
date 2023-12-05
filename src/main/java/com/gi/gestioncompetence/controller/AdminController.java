@@ -2,9 +2,12 @@ package com.gi.gestioncompetence.controller;
 
 import com.gi.gestioncompetence.dto.CompetenceUserCountDTO;
 import com.gi.gestioncompetence.dto.DepartmentEmployeeCountDTO;
+import com.gi.gestioncompetence.dto.FeedbackDto;
+import com.gi.gestioncompetence.entity.Feedback;
 import com.gi.gestioncompetence.repository.*;
 import com.gi.gestioncompetence.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +23,8 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
+
+
     @Autowired
     private UserRepo userRepo;
     @Autowired
@@ -33,6 +38,9 @@ public class AdminController {
 
     @Autowired
     private FormationRepo formationRepo;
+
+    @Autowired
+    private FeedbackRepo feedbackRepo;
 
     @GetMapping("/number-users")
     public long getNumberUsers() {
@@ -52,6 +60,18 @@ public class AdminController {
     @GetMapping("/number-formations")
     public long getNumberFormations() {
         return fileRepository.count();
+    }
+
+    @GetMapping("/all-rating")
+    public List<Feedback> getAllRating() {
+        List<Feedback> data = feedbackRepo.findAll();
+        return data;
+    }
+
+    @GetMapping("/all-rating-numbers")
+    public List<Integer> getAllRatingNumber() {
+        List<Integer> data = feedbackRepo.findAllRate();
+        return data;
     }
 
 
