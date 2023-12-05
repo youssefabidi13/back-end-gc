@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,7 +16,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -38,6 +36,10 @@ public class UserFisca implements UserDetails {
   @Transient
   private Long departementId ;
 
+  @Transient
+  private String decodedPassword ;
+
+
   @JsonBackReference
   @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
   @JoinColumn(name = "departement_id")
@@ -53,6 +55,10 @@ public class UserFisca implements UserDetails {
   @JsonManagedReference
   @OneToMany(cascade=CascadeType.MERGE,fetch = FetchType.LAZY,mappedBy = "utilisateur")
   private List<FormationHistory> historiqueFormation;
+
+  @JsonManagedReference
+  @OneToMany(cascade=CascadeType.MERGE,fetch = FetchType.LAZY,mappedBy = "utilisateur")
+  private List<Feedback> feedbacks;
 
 
   @Override

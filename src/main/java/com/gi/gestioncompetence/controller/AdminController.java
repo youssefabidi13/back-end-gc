@@ -2,10 +2,7 @@ package com.gi.gestioncompetence.controller;
 
 import com.gi.gestioncompetence.dto.CompetenceUserCountDTO;
 import com.gi.gestioncompetence.dto.DepartmentEmployeeCountDTO;
-import com.gi.gestioncompetence.repository.CompetenceRepo;
-import com.gi.gestioncompetence.repository.DepartementRepo;
-import com.gi.gestioncompetence.repository.FormationRepo;
-import com.gi.gestioncompetence.repository.UserRepo;
+import com.gi.gestioncompetence.repository.*;
 import com.gi.gestioncompetence.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +22,8 @@ public class AdminController {
 
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private FileRepository fileRepository;
 
     @Autowired
     private CompetenceRepo competenceRepo;
@@ -52,7 +51,7 @@ public class AdminController {
 
     @GetMapping("/number-formations")
     public long getNumberFormations() {
-        return formationRepo.count();
+        return fileRepository.count();
     }
 
 
