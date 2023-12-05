@@ -11,6 +11,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepo extends JpaRepository<UserFisca, Long> {
     Optional<UserFisca> findByEmail(String email);
+
     boolean existsByEmail(String email);
     @Query("SELECT COUNT(u) FROM UserFisca u WHERE u.departement.idDepartement = :departementId")
     long countUsersByDepartementId(Long departementId);
