@@ -48,6 +48,17 @@ public class UserController {
         return departementRepo.findAll();
     }
 
+    @GetMapping("/auth/user/fullname/{id}")
+    public String getUserFullName(@PathVariable Long id) {
+        Optional<UserFisca> user = userRepo.findById(id);
+        if (user.isPresent()) {
+            return user.get().getNomComplet();
+        } else {
+            return "";
+        }
+    }
+
+
     @PostMapping("/auth/login")
     public Map<String,String> login (String email, String password){
         System.out.println(email+" - "+password);

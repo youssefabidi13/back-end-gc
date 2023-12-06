@@ -37,7 +37,7 @@ public class FileEntity {
 
 
     @JsonManagedReference
-    @OneToMany(cascade=CascadeType.MERGE,fetch = FetchType.LAZY,mappedBy = "idFeedback")
+    @OneToMany(cascade=CascadeType.MERGE,fetch = FetchType.LAZY,mappedBy = "formationHistory")
     private List<Feedback> feedbacks;
 
 

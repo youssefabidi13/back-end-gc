@@ -1,6 +1,9 @@
 package com.gi.gestioncompetence.controller;
 
+import com.gi.gestioncompetence.dto.FeedBackDtoOriginal;
+import com.gi.gestioncompetence.dto.FileDto;
 import com.gi.gestioncompetence.entity.Department;
+import com.gi.gestioncompetence.entity.Feedback;
 import com.gi.gestioncompetence.entity.FileEntity;
 import com.gi.gestioncompetence.entity.UserFisca;
 import com.gi.gestioncompetence.repository.DepartementRepo;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -136,6 +140,34 @@ public class FileController {
         //System.out.println(fileRepository.findByDepartment(department));
         return fileRepository.findByDepartment(department);
 
+    }
+    @GetMapping("/file-by-id/{id}")
+    public FileDto getFileById(@PathVariable Long id) {
+        FileEntity f = fileRepository.findById(id).orElse(null);
+        FileDto fileDto = new FileDto();
+        fileDto.setId(f.getId());
+        fileDto.setFilename(f.getFilename());
+        fileDto.setDepartment(f.getDepartment());
+        fileDto.setContentType(f.getContentType());
+        fileDto.setData(f.getData());
+        fileDto.setFullName(f.getUserFisca().getNomComplet());
+        String message_feedback;
+        int rate;
+        long file_id;
+        String name;
+        Date dateFeedback;
+        System.out.println(f.getFeedbacks().size() +"hzllo");
+        for (Feedback feedback : f.getFeedbacks()) {
+            System.out.println(feedback.getMessageFeedback());
+            message_feedback = feedback.getMessageFeedback();
+            rate = feedback.getRate();
+            file_id = feedback.getIdFeedback();
+            name = feedback.getUtilisateur().getNomComplet();
+            dateFeedback = feedback.getDateFeedback();
+            fileDto.setFeedback(message_feedback, rate, file_id, name, dateFeedback);
+
+        }
+        return fileDto;
     }
 
 }
