@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin("*")
@@ -69,9 +71,24 @@ public class AdminController {
     }
 
     @GetMapping("/all-rating-numbers")
-    public List<Integer> getAllRatingNumber() {
-        List<Integer> data = feedbackRepo.findAllRate();
-        return data;
+    public Map<String, String> getAllRatingNumber() {
+        List<Integer> rates = feedbackRepo.findAllRate();
+
+        Map<String, Integer> rateCountMap = new HashMap<>();
+        for (Integer rate : rates) {
+            rateCountMap.put(rate.toString(), rateCountMap.getOrDefault(rate.toString(), 0) + 1);
+        }
+
+        Map<String, String> rateDistribution = new HashMap<>();
+        int totalFeedbacks = rates.size();
+        for (Map.Entry<String, Integer> entry : rateCountMap.entrySet()) {
+            int count = entry.getValue();
+            double percentage = (count * 100.0) / totalFeedbacks;
+            rateDistribution.put("rate " + entry.getKey(), String.format("%.2f%%", percentage));
+        }
+
+        return rateDistribution;
+
     }
 
 
