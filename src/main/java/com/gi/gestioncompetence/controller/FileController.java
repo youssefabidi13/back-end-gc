@@ -34,7 +34,7 @@ public class FileController {
 
     // Endpoint pour gérer les demandes de téléchargement de fichier
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("department") String department) {
+    public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("department") String department,@RequestParam("id") Long id) {
         try {
             // Créer une entité de fichier pour stocker les informations du fichier
             FileEntity fileEntity = new FileEntity();
@@ -49,6 +49,8 @@ public class FileController {
 
             // Lire les données du fichier et les définir dans l'entité
             fileEntity.setData(file.getBytes());
+
+            fileEntity.setUserFisca(userRepo.findById(id).orElse(null));
 
             // Enregistrer l'entité de fichier dans le référentiel (base de données, par exemple)
             fileRepository.save(fileEntity);

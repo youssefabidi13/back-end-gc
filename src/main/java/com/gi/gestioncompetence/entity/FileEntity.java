@@ -1,6 +1,7 @@
 package com.gi.gestioncompetence.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -28,6 +29,12 @@ public class FileEntity {
     @Lob
     @Column(name = "file")
     private byte[] data;
+
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
+    @JoinColumn(name = "user_id")
+    private UserFisca userFisca;
+
 
     @JsonManagedReference
     @OneToMany(cascade=CascadeType.MERGE,fetch = FetchType.LAZY,mappedBy = "idFeedback")

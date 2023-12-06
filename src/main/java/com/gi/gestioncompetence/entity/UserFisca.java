@@ -39,6 +39,9 @@ public class UserFisca implements UserDetails {
   @Transient
   private String decodedPassword ;
 
+  @JsonManagedReference
+  @OneToMany(cascade=CascadeType.MERGE,fetch = FetchType.LAZY,mappedBy = "id")
+  private List<FileEntity> fileEntities;
 
   @JsonBackReference
   @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
