@@ -62,7 +62,9 @@ public class UserFisca implements UserDetails {
   @OneToMany(cascade=CascadeType.MERGE,fetch = FetchType.LAZY,mappedBy = "utilisateur")
   private List<Feedback> feedbacks;
 
-
+  @JsonManagedReference
+  @OneToMany(cascade = CascadeType.MERGE,fetch = FetchType.LAZY, mappedBy = "utilisateur")
+  private List<Resignation> resignations;
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     List<GrantedAuthority> authorities = Arrays.stream(role.split(","))
