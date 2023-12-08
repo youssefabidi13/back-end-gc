@@ -8,6 +8,7 @@ import com.gi.gestioncompetence.entity.Department;
 import com.gi.gestioncompetence.entity.UserFisca;
 import com.gi.gestioncompetence.repository.DepartementRepo;
 import com.gi.gestioncompetence.repository.UserRepo;
+import com.gi.gestioncompetence.service.EmailSenderService;
 import com.gi.gestioncompetence.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,13 +52,16 @@ public class UserController {
     private  DepartementRepo departmentRepository;
     private UserService userService;
 
-    public UserController(UserService userService) {
+    private final EmailSenderService emailSenderService;
+    public UserController(UserService userService, EmailSenderService emailSenderService) {
         this.userService = userService;
+        this.emailSenderService = emailSenderService;
     }
     @Autowired  // Add this annotation
-    public UserController(UserService userService, DepartementRepo departmentRepository) {  // Add DepartmentRepository as a parameter
+    public UserController(UserService userService, DepartementRepo departmentRepository, EmailSenderService emailSenderService) {  // Add DepartmentRepository as a parameter
         this.userService = userService;
         this.departmentRepository = departmentRepository;  // Add this line
+        this.emailSenderService = emailSenderService;
     }
     @GetMapping("/auth/departements")
     public List<DepartementDto> getDepartements() {
@@ -160,15 +164,23 @@ public class UserController {
         userService.deleteUser(id);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/api/newUser")
-    public ResponseEntity<String> addUser(@RequestBody UserFisca user) {
+    @RequestMapping(method = RequestMethod.POST, value = "/api/newUser/{departement_id}")
+    public ResponseEntity<String> addUser(@RequestBody UserDto user, @PathVariable Long departement_id) {
         // Vérifiez d'abord si l'email 'existe
         if (userService.doesEmailExist(user.getEmail())) {
             return new ResponseEntity<>("L'email de l'user existe déjà", HttpStatus.CONFLICT);
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        UserFisca userFisca = new UserFisca();
+        userFisca.setNomComplet(user.getNomComplet());
+        userFisca.setEmail(user.getEmail());
+        userFisca.setPassword(passwordEncoder.encode(user.getPassword()));
+        userFisca.setRole(user.getRole());
+        userFisca.setDepartementId(departement_id);
+        userFisca.setDepartement(departementRepo.findById(departement_id).get());
+        emailSenderService.sendSimpleEmail(user.getEmail(), "Bienvenue dans le système", "Bonjour " + user.getNomComplet() + ",\n\n"
+                + "Vous avez été ajouté au système. Votre mot de passe est: " + user.getPassword());
         // Si le code n'existe pas, ajoutez le département
-        userService.addUser(user);
+        userService.addUser(userFisca);
         return new ResponseEntity<>("User créé avec succès", HttpStatus.CREATED);
     }
 
@@ -191,19 +203,7 @@ public class UserController {
     }
 
 
-//    @RequestMapping(method = RequestMethod.PUT, value = "/api/updateUser2/{id}")
-//    public ResponseEntity<String> updateUser(@RequestBody UserFisca user, @PathVariable int id) {
-//        // Vérifiez si le code de département existe déjà pour un autre département
-//        Optional<UserFisca> existingUserOptional = userService.getUserByEmail(user.getEmail());
 //
-//        if (existingUserOptional.isPresent() && existingUserOptional.get().getIdUtilisateur() != id) {
-//            return new ResponseEntity<>("L'email existe déjà pour un autre utilisateur", HttpStatus.CONFLICT);
-//        }
-//
-//        // Mise à jour de l'utilisateur
-//        userService.update(user, id);
-//        return new ResponseEntity<>("Utilisateur mis à jour avec succès", HttpStatus.OK);
-//    }
 
 
 
