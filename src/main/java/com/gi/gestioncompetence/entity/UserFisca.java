@@ -27,7 +27,6 @@ public class UserFisca implements UserDetails {
 
   private String nomComplet;
   @Column(unique = true)
-
   private String email;
   private String password;
   private String role;

@@ -18,4 +18,11 @@ public interface UserRepo extends JpaRepository<UserFisca, Long> {
 
     @Query("SELECT c.nomCompetence, COUNT(u) FROM UserFisca u JOIN u.competencesAcquises c GROUP BY c.nomCompetence")
     List<Object[]> countUsersByCompetence();
+
+
+    Optional<UserFisca> findById(Long id);
+
+
+    @Query("SELECT u FROM UserFisca u JOIN FETCH u.departement")
+    List<UserFisca> findAllWithDepartments();
 }
