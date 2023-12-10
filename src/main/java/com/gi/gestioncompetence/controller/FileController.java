@@ -58,7 +58,7 @@ public class FileController {
 
             // Enregistrer l'entité de fichier dans le référentiel (base de données, par exemple)
             fileRepository.save(fileEntity);
-            //triggerMail(fileEntity.getFilename());
+            triggerMail(fileEntity.getFilename());
 
             // Message de succès indiquant que le fichier a été téléchargé avec succès
             String message = "File uploaded successfully!";

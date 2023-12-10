@@ -55,7 +55,7 @@ public class ResignationService {
         Resignation savedResignation = resignationRepository.save(resignation);
 
         // Send resignation response email
-        sendResignationResponse(savedResignation);
+        sendResignationResponseApprove(savedResignation);
     }
 
     private void sendResignationResponse(Resignation resignation) {
@@ -64,7 +64,12 @@ public class ResignationService {
         String body = "Your resignation request has been " + resignation.getStatus().toString().toLowerCase() + ".";
         emailService.sendResignationResponseEmail(to, subject, body);
     }
-
+    private void sendResignationResponseApprove(Resignation resignation) {
+        String to = resignation.getUtilisateur().getEmail();
+        String subject = "Resignation Response";
+        String body = "Your resignation request has been " + resignation.getStatus().toString().toLowerCase() + ". Please upload any course materials you have to the system.";
+        emailService.sendResignationResponseEmail(to, subject, body);
+    }
     public void rejectResignation(Long resignationId) {
         Resignation resignation = resignationRepository.findById(resignationId)
                 .orElseThrow(() -> new RuntimeException("Resignation not found with id: " + resignationId));
